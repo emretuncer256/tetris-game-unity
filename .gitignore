@@ -1,0 +1,9 @@
+.idea/
+.vs/
+.vsconfig
+Library/
+Logs/
+Packages/
+Temp/
+UserSettings/
+obj/
