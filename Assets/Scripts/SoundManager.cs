@@ -17,6 +17,9 @@ public class SoundManager : MonoBehaviour
     public bool playMusic = true;
     public bool playFX = true;
 
+    public IconManager musicIcon;
+    public IconManager fxIcon;
+
     private void Awake()
     {
         instance = this;
@@ -77,10 +80,12 @@ public class SoundManager : MonoBehaviour
     {
         playMusic = !playMusic;
         UpdateMusic();
+        musicIcon.ToggleIcon(playMusic);
     }
 
     public void ToggleFX()
     {
         playFX = !playFX;
+        fxIcon.ToggleIcon(playFX);
     }
 }
