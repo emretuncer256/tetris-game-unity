@@ -47,6 +47,12 @@ public class ShapeManager : MonoBehaviour
 
     #endregion
 
+    public void RotateClockwise(bool clockwise)
+    {
+        if (clockwise) TurnRight();
+        else TurnLeft();
+    }
+
     IEnumerator MovementRoutine()
     {
         while (true)

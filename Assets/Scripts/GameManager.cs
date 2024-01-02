@@ -6,6 +6,8 @@ using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
+    public bool IsGameOver => _ısGameOver;
+
     private SpawnerManager _spawner;
     private BoardManager _board;
 
@@ -24,7 +26,10 @@ public class GameManager : MonoBehaviour
     private float _rotationCounter;
     private float _fallDownCounter;
 
-    private bool _gameOver;
+    private bool _ısGameOver = false;
+
+    public bool isClosckwise = true;
+    public IconManager rotateIcon;
 
 
     private void Start()
@@ -39,7 +44,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!_board || !_spawner || !_currentShape || _gameOver) return;
+        if (!_board || !_spawner || !_currentShape || _ısGameOver) return;
 
         StartControl();
     }
@@ -88,7 +93,9 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                SoundManager.instance.PlayFX(3);    
+                isClosckwise = !isClosckwise;
+                if (rotateIcon) rotateIcon.ToggleIcon(isClosckwise);
+                SoundManager.instance.PlayFX(3);
             }
         }
         else if ((Input.GetKey("down") && Time.time > _fallDownCounter) || Time.time > _dropCounter)
@@ -104,7 +111,7 @@ public class GameManager : MonoBehaviour
                     if (_board.IsOverflow(_currentShape))
                     {
                         _currentShape.MoveUp();
-                        _gameOver = true;
+                        _ısGameOver = true;
                         SoundManager.instance.PlayFX(6);
                     }
                     else
@@ -143,5 +150,20 @@ public class GameManager : MonoBehaviour
             Mathf.Round(vector.x),
             Mathf.Round(vector.y)
         );
+    }
+
+    public void RotationIconDirection()
+    {
+        isClosckwise = !isClosckwise;
+        _currentShape.RotateClockwise(isClosckwise);
+        if (!_board.IsValidPosition(_currentShape))
+        {
+            _currentShape.RotateClockwise(!isClosckwise);
+            SoundManager.instance.PlayFX(3);
+            return;
+        }
+
+        if (rotateIcon) rotateIcon.ToggleIcon(isClosckwise);
+        SoundManager.instance.PlayFX(0);
     }
 }
