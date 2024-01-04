@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class GameManager : MonoBehaviour
 {
-    public bool IsGameOver => _ısGameOver;
+    public bool IsGameOver => _isGameOver;
 
     private SpawnerManager _spawner;
     private BoardManager _board;
@@ -26,10 +26,12 @@ public class GameManager : MonoBehaviour
     private float _rotationCounter;
     private float _fallDownCounter;
 
-    private bool _ısGameOver = false;
+    private bool _isGameOver = false;
 
     public bool isClosckwise = true;
     public IconManager rotateIcon;
+
+    public GameObject gameOverPanel;
 
 
     private void Start()
@@ -40,11 +42,13 @@ public class GameManager : MonoBehaviour
         if (_spawner)
             if (!_currentShape)
                 _currentShape = _spawner.GenerateShape();
+
+        if (gameOverPanel) gameOverPanel.SetActive(false);
     }
 
     private void Update()
     {
-        if (!_board || !_spawner || !_currentShape || _ısGameOver) return;
+        if (!_board || !_spawner || !_currentShape || _isGameOver) return;
 
         StartControl();
     }
@@ -103,22 +107,21 @@ public class GameManager : MonoBehaviour
             _fallDownCounter = Time.time + fallDownTime;
             _dropCounter = Time.time + dropTime;
 
-            if (_currentShape)
+            if (!_currentShape) return;
+            _currentShape.MoveDown();
+
+            if (_board.IsValidPosition(_currentShape)) return;
+
+            if (_board.IsOverflow(_currentShape))
             {
-                _currentShape.MoveDown();
-                if (!_board.IsValidPosition(_currentShape))
-                {
-                    if (_board.IsOverflow(_currentShape))
-                    {
-                        _currentShape.MoveUp();
-                        _ısGameOver = true;
-                        SoundManager.instance.PlayFX(6);
-                    }
-                    else
-                    {
-                        SpawnTile();
-                    }
-                }
+                _currentShape.MoveUp();
+                _isGameOver = true;
+                if (gameOverPanel) gameOverPanel.SetActive(true);
+                SoundManager.instance.PlayFX(6);
+            }
+            else
+            {
+                SpawnTile();
             }
         }
     }
