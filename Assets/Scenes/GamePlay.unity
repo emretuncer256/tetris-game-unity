@@ -3104,6 +3104,7 @@ MonoBehaviour:
   rowTxt: {fileID: 1915668737}
   levelTxt: {fileID: 388173876}
   scoreTxt: {fileID: 1469362736}
+  isLevelPassed: 0
 --- !u!1 &1054094783
 GameObject:
   m_ObjectHideFlags: 0
@@ -5721,7 +5722,6 @@ MonoBehaviour:
   dropTime: 0.25
   leftRightClickTime: 0.2
   rotationTime: 0.1
-  fallDownTime: 0.03
   isClosckwise: 1
   rotateIcon: {fileID: 649436175}
   gameOverPanel: {fileID: 1530625715}

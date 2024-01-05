@@ -14,14 +14,15 @@ public class GameManager : MonoBehaviour
     private ShapeManager _currentShape;
 
     [Header("Counters")] [Range(0.02f, 1.0f)] [SerializeField]
-    private float dropTime = 0.1f;
+    private float dropTime = 0.5f;
 
     [Range(0.02f, 1.0f)] [SerializeField] private float leftRightClickTime = 0.25f;
     [Range(0.02f, 1.0f)] [SerializeField] private float rotationTime = 0.25f;
-    [Range(0.02f, 1.0f)] [SerializeField] private float fallDownTime = 0.25f;
+    // [Range(0.02f, 1.0f)] [SerializeField] private float fallDownTime = 0.25f;
 
 
     private float _dropCounter;
+    private float _fallDownLevelCounter;
     private float _leftRightClickCounter;
     private float _rotationCounter;
     private float _fallDownCounter;
@@ -47,6 +48,8 @@ public class GameManager : MonoBehaviour
                 _currentShape = _spawner.GenerateShape();
 
         if (gameOverPanel) gameOverPanel.SetActive(false);
+
+        _fallDownLevelCounter = dropTime;
     }
 
     private void Update()
@@ -107,7 +110,7 @@ public class GameManager : MonoBehaviour
         }
         else if ((Input.GetKey("down") && Time.time > _fallDownCounter) || Time.time > _dropCounter)
         {
-            _fallDownCounter = Time.time + fallDownTime;
+            _fallDownCounter = Time.time + _fallDownLevelCounter;
             _dropCounter = Time.time + dropTime;
 
             if (!_currentShape) return;
@@ -145,8 +148,17 @@ public class GameManager : MonoBehaviour
         if (_board.completedRows > 0)
         {
             _scoreManager.RowScore(_board.completedRows);
-            if (_board.completedRows > 1)
-                SoundManager.instance.PlayVocal();
+            if (_scoreManager.isLevelPassed)
+            {
+                SoundManager.instance.PlayFX(2);
+                _fallDownLevelCounter = dropTime - Mathf.Clamp(((float)_scoreManager.Level - 1) * .1f, 0.05f, 1f);
+            }
+            else
+            {
+                if (_board.completedRows > 1)
+                    SoundManager.instance.PlayVocal();
+            }
+
             SoundManager.instance.PlayFX(4);
         }
     }

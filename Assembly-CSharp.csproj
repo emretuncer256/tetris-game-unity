@@ -43,13 +43,13 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\ShapeManager.cs" />
      <Compile Include="Assets\Scripts\FadeManager.cs" />
+     <Compile Include="Assets\Scripts\ScoreManager.cs" />
      <Compile Include="Assets\Scripts\IconManager.cs" />
      <Compile Include="Assets\Scripts\SoundManager.cs" />
      <Compile Include="Assets\Scripts\UIManager.cs" />
      <Compile Include="Assets\Scripts\BoardManager.cs" />
      <Compile Include="Assets\Scripts\SpawnerManager.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
-     <Compile Include="Assets\Scripts\ScoreManager.cs" />
      <Folder Include="Assets" />
      <Folder Include="Assets\Prefabs" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

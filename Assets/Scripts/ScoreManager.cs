@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.Serialization;
 
 public class ScoreManager : MonoBehaviour
 {
+    public int Level => _level;
+
     private int _score = 0;
     private int _rows;
     private int _level = 1;
@@ -19,6 +22,8 @@ public class ScoreManager : MonoBehaviour
     public TextMeshProUGUI levelTxt;
     public TextMeshProUGUI scoreTxt;
 
+    [FormerlySerializedAs("levelPassed")] public bool isLevelPassed = false;
+
     private void Start()
     {
         ResetValues();
@@ -28,10 +33,12 @@ public class ScoreManager : MonoBehaviour
     {
         _level = 1;
         _rows = rowCountInLevel * _level;
+        UpdateText();
     }
 
     public void RowScore(int n)
     {
+        isLevelPassed = false;
         n = Mathf.Clamp(n, _minRow, _maxRow);
 
         switch (n)
@@ -50,7 +57,16 @@ public class ScoreManager : MonoBehaviour
                 break;
         }
 
+        _rows -= n;
+        if (_rows <= 0) LevelUp();
         UpdateText();
+    }
+
+    public void LevelUp()
+    {
+        _level++;
+        _rows = rowCountInLevel * _level;
+        isLevelPassed = true;
     }
 
     void UpdateText()
