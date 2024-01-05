@@ -33,11 +33,14 @@ public class GameManager : MonoBehaviour
 
     public GameObject gameOverPanel;
 
+    private ScoreManager _scoreManager;
+
 
     private void Start()
     {
         _spawner = GameObject.FindObjectOfType<SpawnerManager>();
         _board = GameObject.FindObjectOfType<BoardManager>();
+        _scoreManager = GameObject.FindObjectOfType<ScoreManager>();
 
         if (_spawner)
             if (!_currentShape)
@@ -48,7 +51,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (!_board || !_spawner || !_currentShape || _isGameOver) return;
+        if (!_board || !_spawner || !_currentShape || _isGameOver || !_scoreManager) return;
 
         StartControl();
     }
@@ -141,6 +144,7 @@ public class GameManager : MonoBehaviour
 
         if (_board.completedRows > 0)
         {
+            _scoreManager.RowScore(_board.completedRows);
             if (_board.completedRows > 1)
                 SoundManager.instance.PlayVocal();
             SoundManager.instance.PlayFX(4);
