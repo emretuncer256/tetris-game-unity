@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
 
     [Range(0.02f, 1.0f)] [SerializeField] private float leftRightClickTime = 0.25f;
     [Range(0.02f, 1.0f)] [SerializeField] private float rotationTime = 0.25f;
-    // [Range(0.02f, 1.0f)] [SerializeField] private float fallDownTime = 0.25f;
+    [Range(0.02f, 1.0f)] [SerializeField] private float fallDownTime = 0.05f;
 
 
     private float _dropCounter;
@@ -36,12 +36,15 @@ public class GameManager : MonoBehaviour
 
     private ScoreManager _scoreManager;
 
+    private ShapeGizmosManager _gizmosManager;
+
 
     private void Start()
     {
-        _spawner = GameObject.FindObjectOfType<SpawnerManager>();
-        _board = GameObject.FindObjectOfType<BoardManager>();
-        _scoreManager = GameObject.FindObjectOfType<ScoreManager>();
+        _spawner = FindObjectOfType<SpawnerManager>();
+        _board = FindObjectOfType<BoardManager>();
+        _scoreManager = FindObjectOfType<ScoreManager>();
+        _gizmosManager = FindObjectOfType<ShapeGizmosManager>();
 
         if (_spawner)
             if (!_currentShape)
@@ -57,6 +60,14 @@ public class GameManager : MonoBehaviour
         if (!_board || !_spawner || !_currentShape || _isGameOver || !_scoreManager) return;
 
         StartControl();
+    }
+
+    private void LateUpdate()
+    {
+        if (_gizmosManager)
+        {
+            _gizmosManager.CreateShapeGizmos(_currentShape, _board);
+        }
     }
 
     private void StartControl()
@@ -110,8 +121,8 @@ public class GameManager : MonoBehaviour
         }
         else if ((Input.GetKey("down") && Time.time > _fallDownCounter) || Time.time > _dropCounter)
         {
-            _fallDownCounter = Time.time + _fallDownLevelCounter;
-            _dropCounter = Time.time + dropTime;
+            _fallDownCounter = Time.time + fallDownTime;
+            _dropCounter = Time.time + _fallDownLevelCounter;
 
             if (!_currentShape) return;
             _currentShape.MoveDown();
@@ -142,6 +153,8 @@ public class GameManager : MonoBehaviour
         _board.AddInGrid(_currentShape);
         SoundManager.instance.PlayFX(5);
         _currentShape = _spawner.GenerateShape();
+
+        if (_gizmosManager) _gizmosManager.DestroyGizmos();
 
         _board.ClearAllRow();
 
